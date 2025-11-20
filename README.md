@@ -29,10 +29,11 @@ This exercise simulates a real-world SOC workflow, demonstrating detection, reme
 ## Lab Setup
 
 Two VMs connected via a host-only VirtualBox network.
-| VM                 | IP Address     | Installed Tools | Role                              |
-| ------------------ | -------------- | --------------- | --------------------------------- |
-| Web Server         | 192.168.56.101 | Suricata, Nginx, Wireshark | Target of attack & generate alerts |
-| Kali Linux Attack VM | 192.168.56.105 | Nmap, hydra, wireshark     | Simulate Brute-Force attacks          |
+| VM                   | IP Address       | Installed Tools                   | Role                                   |
+|----------------------|------------------|-----------------------------------|----------------------------------------|
+| Web Server           | 192.168.56.101   | Suricata, Nginx, Wireshark        | Target system & alert generation       |
+| Kali Attack VM       | 192.168.56.105   | Nmap, Hydra, Wireshark            | Offense simulation (brute-force)       |
+
 
 ---
 
@@ -84,18 +85,18 @@ Taking note that SSH is open.
 
 ## Step 4. Initiate Brute-Force Attack on the target **Web Server VM**
 
-On the **Kali Linux Attack VM** open **Wireshark** and begin a packet capture on the `host-only` network.  
+On the **Kali Linux Attack VM** open `Wireshark` and begin a packet capture on the `host-only` network.  
 Then commence the **Brute-Force Attack** using `hydra`.
 ```bash
 hydra -l genecys -P /usr/share/wordlists/rockyou.txt ssh://192.168.56.101
 ```
 - Allow `hydra` to run for 1 - 2 minutes before stopping the attack - the total duration time of a full attack would be far too long for this exercise.
 
-Stop the **Wireshark** packet capture and export for analysis.
+Stop the `Wireshark` packet capture and export for analysis.
 
-## Step 5. Analyse logs and packet captures
+## Step 5. Log & Packet Analysis
 
-Filter for **Brute-Force Attack** evidence in **Wireshark**.
+Filter for **Brute-Force Attack** evidence in `Wireshark`.
 
 ```Wireshark
 ssh && tcp contains "ssh"
@@ -171,8 +172,8 @@ sudo fail2ban-client status sshd
 ```
 </details>
 
-## Step 7. Verification
-Back on the **Kali Linux Attack VM** open a new packet capture on **Wireshark** and run the hydra attack again against the target **Web Server VM** to check remediations have been effective.
+## Step 7. Verification and Validation
+Back on the **Kali Linux Attack VM** open a new packet capture on `Wireshark` and run the `hydra` attack again against the target **Web Server VM** to check remediations have been effective.
 ```bash
 hydra -l genecys -P /usr/share/wordlists/rockyou.txt ssh://192.168.56.101
 ```
@@ -205,10 +206,8 @@ This section maps the lab activities to common governance, risk, and compliance 
 | **MITRE ATT&CK**  | T1110 (Brute Force)            | Attack simulation replicates brute-force behavior |
 |                   | D3-FA (Network: IDS)           | Suricata detects SSH brute-force traffic          |
 
-**Purpose of Mapping:**
-- Demonstrates that technical controls (Suricata IDS + monitoring) support compliance requirements.
-- Provides documentation evidence for audits and regulatory reporting.
-- Links SOC detection activity to standardized GRC frameworks, strengthening organizational security posture.
+**Why GRC Mapping Matters:**  
+This mapping demonstrates how technical SOC operations support broader organizational governance and compliance. It translates hands‑on detection and response tasks into measurable controls aligned with NIST, ISO, and MITRE frameworks. This strengthens audit readiness, provides traceability, and shows how SOC activity directly contributes to overall risk reduction.
 </details>
 
 ---
@@ -241,16 +240,18 @@ This section maps the lab activities to common governance, risk, and compliance 
 --- 
 
 ## Supporting Files
+
 **Reports**
 - [Incident Report](./incident_report.md)
 - [GRC Report](./grc_report.md)
 
-[Logs](./logs)
-- Nmap Scans & Wrieshark Packet Captures
-  - _The original .pcapng file is kept offline and available upon request._
+**Logs**
+- Nmap scans and Wireshark packet analyses  
+  - _Original .pcapng files stored offline and available upon request_
 
-[Screenshots](./screenshots)
-- Nmap Scans & Wireshark Filters
+**Screenshots**
+- Evidence of scans, Suricata alerts, Fail2Ban bans, and Wireshark filters
+
 
 ---
 
